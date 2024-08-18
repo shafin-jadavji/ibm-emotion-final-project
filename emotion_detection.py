@@ -1,4 +1,5 @@
 import requests
+import json
 
 # The URL for the emotion detection service provided by the Watson NLP service.
 EMOTION_DETECTION_URL = 'https://sn-watson-emotion.labs.skills.network/v1/watson.runtime.nlp.v1/NlpService/EmotionPredict'
@@ -15,4 +16,6 @@ def emotion_detector(text_to_analyse):
     # Sending a POST request to the emotion detection API
     response = requests.post(EMOTION_DETECTION_URL, json=payload, headers=requests_header, timeout=10)
     
-    return  response.text
+    formatted_response = json.loads(response.text)
+
+    return  formatted_response
