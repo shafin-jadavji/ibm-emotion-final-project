@@ -24,25 +24,48 @@ def emotion_detector(text_to_analyse):
         print(f"Request error: {e}")
         return {'anger': None, 'disgust': None, 'fear': None, 'joy': None, 'sadness': None, 'dominant_emotion': None}
     
-    # Parsing the JSON response from the API
-    formatted_response = json.loads(response.text)
+    if response.status_code == 200:
+        # Parsing the JSON response from the API
+        formatted_response = json.loads(response.text)
 
-    # Extract the required set of emotions, including anger, disgust, fear, joy and sadness, along with their scores.
-    anger = formatted_response['emotionPredictions'][0]['emotion']['anger']
-    disgust = formatted_response['emotionPredictions'][0]['emotion']['disgust']
-    fear = formatted_response['emotionPredictions'][0]['emotion']['fear']
-    joy = formatted_response['emotionPredictions'][0]['emotion']['joy']
-    sadness = formatted_response['emotionPredictions'][0]['emotion']['sadness']
+        # Extract the required set of emotions, including anger, disgust, fear, joy and sadness, along with their scores.
+        anger = formatted_response['emotionPredictions'][0]['emotion']['anger']
+        disgust = formatted_response['emotionPredictions'][0]['emotion']['disgust']
+        fear = formatted_response['emotionPredictions'][0]['emotion']['fear']
+        joy = formatted_response['emotionPredictions'][0]['emotion']['joy']
+        sadness = formatted_response['emotionPredictions'][0]['emotion']['sadness']
 
-    # Determine the dominant emotion based on the maximum score among the emotions
-    emotions = {'anger': anger, 'disgust': disgust, 'fear': fear, 'joy': joy, 'sadness': sadness}
-    dominant_emotion = max(emotions, key=emotions.get)
+        # Determine the dominant emotion based on the maximum score among the emotions
+        emotions = {'anger': anger, 'disgust': disgust, 'fear': fear, 'joy': joy, 'sadness': sadness}
+        dominant_emotion = max(emotions, key=emotions.get)
+        
+        return {
+            'anger': anger,
+            'disgust': disgust,
+            'fear': fear,
+            'joy': joy,
+            'sadness': sadness,
+            'dominant_emotion': dominant_emotion
+        }
     
-    return {
-        'anger': anger,
-        'disgust': disgust,
-        'fear': fear,
-        'joy': joy,
-        'sadness': sadness,
-        'dominant_emotion': dominant_emotion
-    }
+    elif response.status_code == 500:
+        return {
+            'anger': None,
+            'disgust': None,
+            'fear': None,
+            'joy': None,
+            'sadness': None,
+            'dominant_emotion': None
+        }
+
+    else:
+        # Handling other status codes
+        print(f"Request failed with status code {response.status_code}")
+        return {
+            'anger': None,
+            'disgust': None,
+            'fear': None,
+            'joy': None,
+            'sadness': None,
+            'dominant_emotion': None
+        }
