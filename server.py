@@ -25,6 +25,10 @@ def emotion_detect():
     # Pass the text to the emotion_detector function and store the response
     response = emotion_detector(text_to_analyze)
 
+    # Check if the dominant_emotion is None
+    if response['dominant_emotion'] is None:
+        return "Invalid text! Please try again!"
+
     # Extract the anger, disgust, fear, joy, sadness, and dominant emotion from the response
     anger = response['anger']
     disgust = response['disgust']
@@ -34,7 +38,9 @@ def emotion_detect():
     dominant_emotion = response['dominant_emotion']
 
     # Return a formatted string with the emotion label and score
-    return "For the given statement, the system response is 'anger': {}, 'disgust': {}, 'fear': {}, 'joy': {}, 'sadness': {}. The dominant emotion is {}.".format(anger, disgust, fear, joy, sadness, dominant_emotion)
+    return (f"For the given statement, the system response is 'anger': {anger}, "
+            f"'disgust': {disgust}, 'fear': {fear}, 'joy': {joy}, 'sadness': {sadness}. "
+            f"The dominant emotion is {dominant_emotion}.")
 
 @app.route("/")
 def render_index_page():
@@ -44,7 +50,5 @@ def render_index_page():
     return render_template("index.html")
 
 if __name__ == "__main__":
-    ''' This functions executes the flask app and deploys it on localhost:5000
-    '''
+    # This functions executes the flask app and deploys it on localhost:5000
     app.run(host='localhost', port=5000)
-
